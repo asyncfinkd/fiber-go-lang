@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -145,11 +146,15 @@ func main() {
 		return ctx.SendString("Hello, World")
 	})
 
+	app.Use(func(c *fiber.Ctx) error {
+		return c.SendStatus(404)
+	})
+
 	app.Get("/todos", getTodos)
 	app.Post("/add/todo", createTodo)
 	app.Get("/todos/:id", getTodo)
 	app.Delete("/delete/todo/:id", deleteTodo)
 	app.Patch("/edit/todo/:id", editTodo)
 
-	app.Listen(":80")
+	log.Fatal(app.Listen(":80"))
 }
