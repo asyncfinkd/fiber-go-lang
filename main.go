@@ -1,6 +1,10 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"strconv"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 type Todo struct {
 	Id        int
@@ -43,6 +47,28 @@ func createTodo(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(todo)
 }
 
+func getTodo(ctx *fiber.Ctx) error {
+	paramsId := ctx.Params("id")
+
+	id, err := strconv.Atoi(paramsId)
+
+	if err != nil {
+		ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "cannot parse id",
+		})
+	}
+
+	for _, todo := range todos {
+		if todo.Id == id {
+			return ctx.Status(fiber.StatusOK).JSON(todo)
+		}
+	}
+
+	return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
+		"error": "system error",
+	})
+}
+
 func main() {
 	app := fiber.New()
 
@@ -52,6 +78,7 @@ func main() {
 
 	app.Get("/todos", getTodos)
 	app.Post("/add/todo", createTodo)
+	app.Get("/todos/:id", getTodo)
 
 	app.Listen(":80")
 }
