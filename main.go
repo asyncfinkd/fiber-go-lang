@@ -4,37 +4,43 @@ import "github.com/gofiber/fiber/v2"
 
 type Todo struct {
 	Id        int
-	text      string
-	completed bool
+	Name      string
+	Completed bool
+}
+
+var todos = []Todo{
+	{Id: 1, Name: "test", Completed: false},
+	{Id: 2, Name: "test2", Completed: true},
 }
 
 func getTodos(ctx *fiber.Ctx) error {
-	item := Todo{
-		1,
-		"Hello, World",
-		false,
-	}
-
-	return ctx.Status(fiber.StatusOK).JSON(item)
+	return ctx.Status(fiber.StatusOK).JSON(todos)
 }
 
-var todo Todo
-
 func createTodo(ctx *fiber.Ctx) error {
-	body := new(Todo)
-	err := ctx.BodyParser(body)
+	type request struct {
+		Name string
+	}
+
+	var body request
+
+	err := ctx.BodyParser(&body)
+
 	if err != nil {
-		ctx.Status(fiber.StatusBadRequest).SendString(err.Error())
-		return err
+		ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "cannot parse json",
+		})
 	}
 
-	todo = Todo{
-		Id:        body.Id,
-		text:      body.text,
-		completed: false,
+	todo := Todo{
+		Id:        len(todos) + 1,
+		Name:      body.Name,
+		Completed: false,
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(todo)
+	todos = append(todos, todo)
+
+	return ctx.Status(fiber.StatusCreated).JSON(todo)
 }
 
 func main() {
@@ -45,7 +51,7 @@ func main() {
 	})
 
 	app.Get("/todos", getTodos)
-	app.Post("add/todo", createTodo)
+	app.Post("/add/todo", createTodo)
 
 	app.Listen(":80")
 }
