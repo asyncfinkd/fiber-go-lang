@@ -69,6 +69,25 @@ func getTodo(ctx *fiber.Ctx) error {
 	})
 }
 
+func deleteTodo(ctx *fiber.Ctx) error {
+	paramsId := ctx.Params("id")
+	id, err := strconv.Atoi(paramsId)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "cannot parse id",
+		})
+	}
+
+	for i, todo := range todos {
+		if todo.Id == id {
+			todos = append(todos[0:i], todos[i+1:]...)
+			return ctx.Status(fiber.StatusNoContent).JSON("...")
+		}
+	}
+
+	return ctx.Status(fiber.StatusNotFound).JSON("...")
+}
+
 func main() {
 	app := fiber.New()
 
@@ -79,6 +98,7 @@ func main() {
 	app.Get("/todos", getTodos)
 	app.Post("/add/todo", createTodo)
 	app.Get("/todos/:id", getTodo)
+	app.Delete("/delete/todo/:id", deleteTodo)
 
 	app.Listen(":80")
 }
