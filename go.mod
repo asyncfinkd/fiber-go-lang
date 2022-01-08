@@ -1,4 +1,4 @@
-module github.com/asyncfinkd/fiber-go-lang
+module fiber-go-lang
 
 go 1.17
 
