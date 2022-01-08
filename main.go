@@ -152,6 +152,12 @@ func auth(ctx *fiber.Ctx) error {
 		Password *string
 	}
 
+	type TReturn struct {
+		Success      bool
+		Message      string
+		Access_Token string
+	}
+
 	var body request
 	err := ctx.BodyParser(&body)
 	if err != nil {
@@ -171,11 +177,20 @@ func auth(ctx *fiber.Ctx) error {
 	for _, t := range users {
 		loginValidate := t.Email == *body.Email && t.Password == *body.Password
 		if loginValidate {
-			return ctx.Status(fiber.StatusOK).JSON(body)
+			OReturn := &TReturn{
+				Message:      "Congratulation, you logged succesfully",
+				Success:      true,
+				Access_Token: "___",
+			}
+			return ctx.Status(fiber.StatusOK).JSON(OReturn)
 		}
 	}
 
-	return ctx.Status(fiber.StatusBadRequest).JSON("something went wrong")
+	OReturn := &TReturn{
+		Message: "Credentials incorrect.",
+		Success: false,
+	}
+	return ctx.Status(fiber.StatusBadRequest).JSON(OReturn)
 }
 
 func main() {
