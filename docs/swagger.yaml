@@ -1,0 +1,43 @@
+definitions:
+  handler.Message:
+    properties:
+      success:
+        type: boolean
+    type: object
+  handler.Todo:
+    properties:
+      completed:
+        type: boolean
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is an API for Book Application
+  title: Book App
+  version: "1.0"
+paths:
+  /api/todos:
+    get:
+      consumes:
+      - application/json
+      description: Get all todos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handler.Todo'
+            type: array
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/handler.Message'
+      summary: Get all todos
+      tags:
+      - todo
+swagger: "2.0"

@@ -14,6 +14,7 @@ func SetupRoutes(app *fiber.App) {
 		return ctx.SendString("Hello, World")
 	})
 
+	// app.Get("/docs/*", swagger.Handler)
 	api.Get("/todos", handler.GetTodos)
 	api.Get("/todos/:id", handler.GetTodo)
 	api.Post("/add/todo", handler.CreateTodo)

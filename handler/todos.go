@@ -12,11 +12,23 @@ type Todo struct {
 	Completed bool
 }
 
+type Message struct {
+	Success bool
+}
+
 var todos = []*Todo{
 	{Id: 1, Name: "test", Completed: false},
 	{Id: 2, Name: "test2", Completed: true},
 }
 
+// @Summary Get all todos
+// @Description Get all todos
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Success 200 {array} Todo{}
+// @Failure 503 {object} Message{}
+// @Router /api/todos [get]
 func GetTodos(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(todos)
 }
