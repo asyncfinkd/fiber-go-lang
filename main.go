@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,9 +14,18 @@ type Todo struct {
 	Completed bool
 }
 
+type User struct {
+	Email    string
+	Password string
+}
+
 var todos = []*Todo{
 	{Id: 1, Name: "test", Completed: false},
 	{Id: 2, Name: "test2", Completed: true},
+}
+
+var users = []*User{
+	{Email: "ns@gmail.com", Password: "123123123"},
 }
 
 func getTodos(ctx *fiber.Ctx) error {
@@ -136,6 +146,38 @@ func editTodo(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(todo)
 }
 
+func auth(ctx *fiber.Ctx) error {
+	type request struct {
+		Email    *string
+		Password *string
+	}
+
+	var body request
+	err := ctx.BodyParser(&body)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "cannot parse body",
+		})
+	}
+
+	if !strings.Contains(*body.Email, "@") {
+		return ctx.Status(fiber.StatusBadRequest).JSON("email address you entered doesn't contain '@' sign")
+	}
+
+	if len(*body.Password) < 6 {
+		return ctx.Status(fiber.StatusBadRequest).JSON("password you entered is too short")
+	}
+
+	for _, t := range users {
+		loginValidate := t.Email == *body.Email && t.Password == *body.Password
+		if loginValidate {
+			return ctx.Status(fiber.StatusOK).JSON(body)
+		}
+	}
+
+	return ctx.Status(fiber.StatusBadRequest).JSON("something went wrong")
+}
+
 func main() {
 	app := fiber.New()
 
@@ -146,15 +188,16 @@ func main() {
 		return ctx.SendString("Hello, World")
 	})
 
+	app.Get("/todos", getTodos)
+	app.Get("/todos/:id", getTodo)
+	app.Post("/add/todo", createTodo)
+	app.Post("/auth", auth)
+	app.Delete("/delete/todo/:id", deleteTodo)
+	app.Patch("/edit/todo/:id", editTodo)
+
 	app.Use(func(c *fiber.Ctx) error {
 		return c.SendStatus(404)
 	})
-
-	app.Get("/todos", getTodos)
-	app.Post("/add/todo", createTodo)
-	app.Get("/todos/:id", getTodo)
-	app.Delete("/delete/todo/:id", deleteTodo)
-	app.Patch("/edit/todo/:id", editTodo)
 
 	log.Fatal(app.Listen(":80"))
 }
