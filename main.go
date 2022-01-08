@@ -2,10 +2,12 @@ package main
 
 import (
 	"log"
+	"os"
 	"strconv"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 type Todo struct {
@@ -203,6 +205,10 @@ func main() {
 		return ctx.SendString("Hello, World")
 	})
 
+	if err := godotenv.Load(".env"); err != nil {
+		panic("Error loading .env file")
+	}
+
 	app.Get("/todos", getTodos)
 	app.Get("/todos/:id", getTodo)
 	app.Post("/add/todo", createTodo)
@@ -214,5 +220,5 @@ func main() {
 		return c.SendStatus(404)
 	})
 
-	log.Fatal(app.Listen(":80"))
+	log.Fatal(app.Listen(os.Getenv("PORT")))
 }
