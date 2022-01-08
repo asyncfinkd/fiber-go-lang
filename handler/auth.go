@@ -11,10 +11,23 @@ type User struct {
 	Password string
 }
 
+type TStructure struct {
+	Message      string
+	Success      bool
+	Access_token string
+}
+
 var users = []*User{
 	{Email: "ns@gmail.com", Password: "123123123"},
 }
 
+// @Summary Auth
+// @Description Auth
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} TStructure
+// @Router /api/auth [post]
 func Auth(ctx *fiber.Ctx) error {
 	type request struct {
 		Email    *string

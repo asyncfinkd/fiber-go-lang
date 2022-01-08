@@ -1,6 +1,10 @@
 definitions:
-  handler.Message:
+  handler.TStructure:
     properties:
+      access_token:
+        type: string
+      message:
+        type: string
       success:
         type: boolean
     type: object
@@ -15,10 +19,40 @@ definitions:
     type: object
 info:
   contact: {}
-  description: This is an API for Book Application
-  title: Book App
+  description: This is an API for Todo Application
+  title: Todo App
   version: "1.0"
 paths:
+  /api/add/todo:
+    post:
+      consumes:
+      - application/json
+      description: Create todo
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Todo'
+      summary: Create todo
+      tags:
+      - todo
+  /api/auth:
+    post:
+      consumes:
+      - application/json
+      description: Auth
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.TStructure'
+      summary: Auth
+      tags:
+      - auth
   /api/todos:
     get:
       consumes:
@@ -33,11 +67,68 @@ paths:
             items:
               $ref: '#/definitions/handler.Todo'
             type: array
-        "503":
-          description: Service Unavailable
-          schema:
-            $ref: '#/definitions/handler.Message'
       summary: Get all todos
+      tags:
+      - todo
+  /api/todos/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete todo
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Delete todo
+      tags:
+      - todo
+    get:
+      consumes:
+      - application/json
+      description: Get once todo
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Todo'
+      summary: Get once todo
+      tags:
+      - todo
+    patch:
+      consumes:
+      - application/json
+      description: Edit todo
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Todo'
+      summary: Edit todo
       tags:
       - todo
 swagger: "2.0"

@@ -27,12 +27,18 @@ var todos = []*Todo{
 // @Accept json
 // @Produce json
 // @Success 200 {array} Todo{}
-// @Failure 503 {object} Message{}
 // @Router /api/todos [get]
 func GetTodos(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(todos)
 }
 
+// @Summary Create todo
+// @Description Create todo
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Success 200 {object} Todo
+// @Router /api/add/todo [post]
 func CreateTodo(ctx *fiber.Ctx) error {
 	type request struct {
 		Name string
@@ -59,6 +65,14 @@ func CreateTodo(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusCreated).JSON(todo)
 }
 
+// @Summary Get once todo
+// @Description Get once todo
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Param id path int true "Todo ID"
+// @Success 200 {object} Todo
+// @Router /api/todos/{id} [get]
 func GetTodo(ctx *fiber.Ctx) error {
 	paramsId := ctx.Params("id")
 
@@ -81,6 +95,14 @@ func GetTodo(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Summary Delete todo
+// @Description Delete todo
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Param id path int true "Todo ID"
+// @Success 200 {string} ...
+// @Router /api/todos/{id} [delete]
 func DeleteTodo(ctx *fiber.Ctx) error {
 	paramsId := ctx.Params("id")
 	id, err := strconv.Atoi(paramsId)
@@ -100,6 +122,14 @@ func DeleteTodo(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusNotFound).JSON("...")
 }
 
+// @Summary Edit todo
+// @Description Edit todo
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Param id path int true "Todo ID"
+// @Success 200 {object} Todo
+// @Router /api/todos/{id} [patch]
 func EditTodo(ctx *fiber.Ctx) error {
 	type request struct {
 		Name      *string

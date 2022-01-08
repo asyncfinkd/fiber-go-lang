@@ -23,6 +23,52 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/add/todo": {
+            "post": {
+                "description": "Create todo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todo"
+                ],
+                "summary": "Create todo",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Todo"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth": {
+            "post": {
+                "description": "Auth",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Auth",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.TStructure"
+                        }
+                    }
+                }
+            }
+        },
         "/api/todos": {
             "get": {
                 "description": "Get all todos",
@@ -45,11 +91,97 @@ var doc = `{
                                 "$ref": "#/definitions/handler.Todo"
                             }
                         }
-                    },
-                    "503": {
-                        "description": "Service Unavailable",
+                    }
+                }
+            }
+        },
+        "/api/todos/{id}": {
+            "get": {
+                "description": "Get once todo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todo"
+                ],
+                "summary": "Get once todo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Todo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.Message"
+                            "$ref": "#/definitions/handler.Todo"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete todo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todo"
+                ],
+                "summary": "Delete todo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Todo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Edit todo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "todo"
+                ],
+                "summary": "Edit todo",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Todo ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Todo"
                         }
                     }
                 }
@@ -57,9 +189,15 @@ var doc = `{
         }
     },
     "definitions": {
-        "handler.Message": {
+        "handler.TStructure": {
             "type": "object",
             "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
                 "success": {
                     "type": "boolean"
                 }
@@ -97,8 +235,8 @@ var SwaggerInfo = swaggerInfo{
 	Host:        "",
 	BasePath:    "",
 	Schemes:     []string{},
-	Title:       "Book App",
-	Description: "This is an API for Book Application",
+	Title:       "Todo App",
+	Description: "This is an API for Todo Application",
 }
 
 type s struct{}

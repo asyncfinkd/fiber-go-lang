@@ -10,9 +10,9 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// @title Book App
+// @title Todo App
 // @version 1.0
-// @description This is an API for Book Application
+// @description This is an API for Todo Application
 
 func main() {
 	app := fiber.New()
